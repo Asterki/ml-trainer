@@ -1,21 +1,18 @@
-import axios from 'axios'
-import { motion } from 'framer-motion'
-
 import * as React from 'react'
+import axios from 'axios'
+import { useNavigate } from 'react-router-dom'
+
+import { motion } from 'framer-motion'
 
 import { IoStatsChartOutline } from 'react-icons/io5'
 import { MdGroupWork } from 'react-icons/md'
 import { GrCluster } from 'react-icons/gr'
 
-interface File {
-	createdAt: string
-	extension: string
-	filename: string
-	id: string
-	path: string
-}
+import { File } from '../types'
 
-export default function App() {
+export default function Index() {
+	const navigate = useNavigate()
+
 	const [currentSlide, setCurrentSlide] = React.useState(0)
 	const [uploadedFiles, setUploadedFiles] = React.useState<File[]>([])
 	const [fileID, setFileID] = React.useState<string | null>(null)
@@ -36,11 +33,15 @@ export default function App() {
 			const res = await axios.post<{
 				file_id: string
 				message: string
-			}>(`${import.meta.env.VITE_SERVER_URL}/api/files/upload`, formData, {
-				headers: {
-					'Content-Type': 'multipart/form-data',
+			}>(
+				`${import.meta.env.VITE_SERVER_URL}/api/files/upload`,
+				formData,
+				{
+					headers: {
+						'Content-Type': 'multipart/form-data',
+					},
 				},
-			})
+			)
 
 			setFileID(res.data.file_id)
 			setCurrentSlide(1)
@@ -217,7 +218,10 @@ export default function App() {
 
 					<button
 						className="rounded-md shadow-md py-2 px-4 bg-blue-500 text-white mt-3"
-						onClick={() => setCurrentSlide(2)}
+						onClick={() => {
+							if (!selectedMLType) return
+							navigate(`/train/${selectedMLType}/${fileID}`)
+						}}
 					>
 						Next
 					</button>
