@@ -36,7 +36,7 @@ export default function App() {
 			const res = await axios.post<{
 				file_id: string
 				message: string
-			}>('http://localhost:3000/api/files/upload', formData, {
+			}>(`${import.meta.env.VITE_SERVER_URL}/api/files/upload`, formData, {
 				headers: {
 					'Content-Type': 'multipart/form-data',
 				},
@@ -53,7 +53,7 @@ export default function App() {
 		axios
 			.get<{
 				files: File[]
-			}>('http://localhost:3000/api/files/list')
+			}>(`${import.meta.env.VITE_SERVER_URL}/api/files/list`)
 			.then((res) => {
 				console.log(res.data)
 				return setUploadedFiles(res.data.files)
