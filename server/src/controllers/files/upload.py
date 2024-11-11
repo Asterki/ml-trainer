@@ -13,6 +13,9 @@ def upload_handler(request: Request):
 
     file_id = str(uuid4())
     file.extension = file.filename.split(".")[-1]
+    if file.extension not in ["csv"]:
+        return jsonify({"error": "Invalid file extension"}), 400
+
     file.save(f"uploads/{file_id}.{file.extension}")
 
     async def register_file_to_db():
