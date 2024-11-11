@@ -19,6 +19,9 @@ export default function App() {
 	const [currentSlide, setCurrentSlide] = React.useState(0)
 	const [uploadedFiles, setUploadedFiles] = React.useState<File[]>([])
 	const [fileID, setFileID] = React.useState<string | null>(null)
+	const [selectedMLType, setSelectedMLType] = React.useState<
+		'regression' | 'clustering' | 'classification' | null
+	>(null)
 
 	const fileRef = React.useRef<HTMLInputElement>(null)
 
@@ -67,9 +70,6 @@ export default function App() {
 							transitionEnd: {
 								display: 'none',
 							},
-							transition: {
-								delay: 0.5,
-							},
 						},
 						visible: { opacity: 1, display: 'flex' },
 					}}
@@ -117,9 +117,6 @@ export default function App() {
 								transitionEnd: {
 									display: 'none',
 								},
-								transition: {
-									delay: 0.5,
-								},
 							},
 							visible: { opacity: 1, display: 'flex' },
 						}}
@@ -159,11 +156,14 @@ export default function App() {
 							transitionEnd: {
 								display: 'none',
 							},
+						},
+						visible: {
+							opacity: 1,
+							display: 'flex',
 							transition: {
 								delay: 0.5,
 							},
 						},
-						visible: { opacity: 1, display: 'flex' },
 					}}
 					initial="hidden"
 					animate={currentSlide === 1 ? 'visible' : 'hidden'}
@@ -173,19 +173,64 @@ export default function App() {
 						Type of Machine Learning to apply
 					</h1>
 					<div className="flex items-center justify-center gap-2 ">
-						<div className="rounded-md border-2 border-neutral-600 shadow-md p-4 flex items-center justify-center flex-col gap-2 group transition-all hover:bg-gray-200/10 cursor-pointer">
-							<IoStatsChartOutline className="text-[7rem] group-hover:text-blue-500" />
+						<div
+							className="rounded-md border-2 border-neutral-600 shadow-md p-4 flex items-center justify-center flex-col gap-2 group transition-all hover:bg-gray-200/10 cursor-pointer"
+							onClick={() => setSelectedMLType('regression')}
+						>
+							<IoStatsChartOutline
+								className={`text-[7rem] group-hover:text-blue-500 transition-all ${
+									selectedMLType == 'regression'
+										? 'text-blue-500'
+										: ''
+								}`}
+							/>
 							<p>Regression</p>
 						</div>
-						<div className="rounded-md border-2 border-neutral-600 shadow-md p-4 flex items-center justify-center flex-col gap-2 group transition-all hover:bg-gray-200/10 cursor-pointer">
-							<MdGroupWork className="text-[7rem] group-hover:text-blue-500" />
-							<p>Clustering</p>
-						</div>
-						<div className="rounded-md border-2 border-neutral-600 shadow-md p-4 flex items-center justify-center flex-col gap-2 group transition-all hover:bg-gray-200/10 cursor-pointer">
-							<GrCluster className="text-[7rem] group-hover:text-blue-500" />
+
+						<div
+							className="rounded-md border-2 border-neutral-600 shadow-md p-4 flex items-center justify-center flex-col gap-2 group transition-all hover:bg-gray-200/10 cursor-pointer"
+							onClick={() => setSelectedMLType('classification')}
+						>
+							<GrCluster
+								className={`text-[7rem] group-hover:text-blue-500 transition-all ${
+									selectedMLType == 'classification'
+										? 'text-blue-500'
+										: ''
+								}`}
+							/>
 							<p>Classification</p>
 						</div>
+						<div
+							className="rounded-md border-2 border-neutral-600 shadow-md p-4 flex items-center justify-center flex-col gap-2 group transition-all hover:bg-gray-200/10 cursor-pointer"
+							onClick={() => setSelectedMLType('clustering')}
+						>
+							<MdGroupWork
+								className={`text-[7rem] group-hover:text-blue-500 transition-all ${
+									selectedMLType == 'clustering'
+										? 'text-blue-500'
+										: ''
+								}`}
+							/>
+							<p>Clustering</p>
+						</div>
 					</div>
+
+					<button
+						className="rounded-md shadow-md py-2 px-4 bg-blue-500 text-white mt-3"
+						onClick={() => setCurrentSlide(2)}
+					>
+						Next
+					</button>
+
+					<button
+						className="rounded-md shadow-md py-2 px-4 bg-red-500 text-white mt-3"
+						onClick={() => {
+							setCurrentSlide(0)
+							setSelectedMLType(null)
+						}}
+					>
+						Back
+					</button>
 				</motion.div>
 			</main>
 		</div>
