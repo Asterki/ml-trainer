@@ -27,6 +27,8 @@ def upload_handler(request: Request):
                 "path": f"uploads/{file_id}.{file.extension}",
             }
         )
+        
+        await db.disconnect()
 
     asyncio.run(register_file_to_db())
-    return jsonify({"message": "File uploaded successfully"})
+    return jsonify({"message": "File uploaded successfully", "file_id": file_id})
