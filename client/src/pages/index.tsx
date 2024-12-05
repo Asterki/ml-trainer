@@ -10,11 +10,13 @@ import { MdGroupWork } from 'react-icons/md'
 import { GrCluster } from 'react-icons/gr'
 
 import datasetsFeature from '../features/datasets'
+import { FaTrash } from 'react-icons/fa'
 
 export default function Index() {
 	const navigate = useNavigate()
 
-	const { currentDatasetList, selectDataset } = datasetsFeature.useDatasets()
+	const { currentDatasetList, selectDataset, deleteDataset } =
+		datasetsFeature.useDatasets()
 
 	const [currentSlide, setCurrentSlide] = React.useState(0)
 	const [fileID, setFileID] = React.useState<string | null>(null)
@@ -128,17 +130,28 @@ export default function Index() {
 						{currentDatasetList.map((file) => (
 							<div
 								key={file.id}
-								className="flex items-center gap-2 cursor-pointer p-2 rounded-md transition-all hover:bg-gray-400/10"
+								className="flex group items-center gap-2 cursor-pointer p-2 rounded-md transition-all justify-between hover:bg-gray-400/10"
 								onClick={() => {
 									setFileID(file.id)
 									selectDataset(file.id)
 									setCurrentSlide(1)
 								}}
 							>
-								<p>{file.filename}</p>
-								<p className="text-neutral-500 text-sm">
-									{file.createdAt} ({file.id})
-								</p>
+								<div className="flex gap-2 items-center justify-center">
+									<p>{file.filename}</p>
+									<p className="text-neutral-500 text-sm">
+										{file.createdAt} ({file.id})
+									</p>
+								</div>
+								<div
+									className="group-hover:opacity-100 opacity-0 transition-all flex gap-2 items-center justify-center hover:bg-white/20 rounded-full w-6 h-6"
+									onClick={(e) => {
+										e.stopPropagation()
+										deleteDataset(file.id)
+									}}
+								>
+									<FaTrash className="text-red-500" />
+								</div>
 							</div>
 						))}
 					</motion.div>

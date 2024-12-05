@@ -6,6 +6,7 @@ sys.path.append("..")
 from controllers.files.upload import upload_handler
 from controllers.files.download import download_handler
 from controllers.files.list import list_handler
+from controllers.files.delete import delete_handler
 
 files_router = Blueprint("files_router", __name__, url_prefix="/api/files")
 
@@ -18,6 +19,10 @@ def upload():
 def download():
     return download_handler(request)
 
-@files_router.route("/list", methods=["GET"])  # type: ignore
+@files_router.route("/list", methods=["GET"]) 
 def list():
     return list_handler(request)
+
+@files_router.route("/delete", methods=["POST"])
+def delete():
+    return delete_handler(request)

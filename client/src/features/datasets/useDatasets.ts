@@ -35,6 +35,11 @@ const useDatasets = () => {
 		return true
 	}
 
+	const deleteDataset = async (datasetId: string) => {
+		await datasetsApi.deleteDataset(datasetId)
+		dispatch(setDatasetList(await datasetsApi.fetchDatasetList()))
+	}
+
 	useEffect(() => {
 		;(async () => {
 			dispatch(setDatasetList(await datasetsApi.fetchDatasetList()))
@@ -50,6 +55,7 @@ const useDatasets = () => {
 	return {
 		currentDatasetList,
 		selectDataset,
+		deleteDataset,
 	}
 }
 
