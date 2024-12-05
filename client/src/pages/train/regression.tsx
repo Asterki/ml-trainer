@@ -15,19 +15,20 @@ export default function TrainRegression() {
 	React.useEffect(() => {
 		if (fileID === undefined) return navigate('/home')
 		;(async () => {
-			const response = await axios.get<string>(
+			// TODO: Get only a part of the dataset to preview
+			const datasetResponse = await axios.get<string>(
 				`${
 					import.meta.env.VITE_SERVER_URL
 				}/api/files/download?file_id=${fileID}`,
 			)
-			const headerRow = response.data.split('\n')[0]
+			const headerRow = datasetResponse.data.split('\n')[0]
 			const header = headerRow.split(',')
 
 			const dataset = Object.fromEntries(
 				header.map((column) => [
 					column,
 					[
-						...response.data
+						...datasetResponse.data
 							.replace('\r', '')
 							.split('\n')
 							.slice(1)
@@ -39,6 +40,12 @@ export default function TrainRegression() {
 			)
 
 			setDataset(dataset)
+
+			// Get the plot
+			const plotResponse = await axios.get<string>(``)
+
+			const plot = plotResponse.data
+			console.log(plot)
 		})()
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])
@@ -47,13 +54,15 @@ export default function TrainRegression() {
 		<div className="min-h-screen w-full">
 			<main className="w-full flex">
 				<section className="p-2 rounded-md border-2 border-neutral-600">
-					<h1 className='text-lg'>Current Dataset</h1>
+					<h1 className="text-lg">Preview of the current dataset</h1>
 					<table className="w-full border">
 						<thead className="bg-neutral-500">
 							<tr>
 								{dataset &&
 									Object.keys(dataset).map((column) => (
-										<th  className='border' key={column}>{column}</th>
+										<th className="border" key={column}>
+											{column}
+										</th>
 									))}
 							</tr>
 						</thead>

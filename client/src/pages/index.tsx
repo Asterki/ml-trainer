@@ -4,17 +4,19 @@ import { useNavigate } from 'react-router-dom'
 
 import { motion } from 'framer-motion'
 
+// Icons
 import { IoStatsChartOutline } from 'react-icons/io5'
 import { MdGroupWork } from 'react-icons/md'
 import { GrCluster } from 'react-icons/gr'
 
-import { File } from '../types'
+import datasetsFeature from '../features/datasets'
 
 export default function Index() {
 	const navigate = useNavigate()
 
+	const { currentDatasetList } = datasetsFeature.useDatasets()
+
 	const [currentSlide, setCurrentSlide] = React.useState(0)
-	const [uploadedFiles, setUploadedFiles] = React.useState<File[]>([])
 	const [fileID, setFileID] = React.useState<string | null>(null)
 	const [selectedMLType, setSelectedMLType] = React.useState<
 		'regression' | 'clustering' | 'classification' | null
@@ -49,17 +51,6 @@ export default function Index() {
 			console.error(error)
 		}
 	}
-
-	React.useEffect(() => {
-		axios
-			.get<{
-				files: File[]
-			}>(`${import.meta.env.VITE_SERVER_URL}/api/files/list`)
-			.then((res) => {
-				console.log(res.data)
-				return setUploadedFiles(res.data.files)
-			})
-	}, [])
 
 	return (
 		<div className="min-h-screen w-full">
@@ -123,7 +114,9 @@ export default function Index() {
 						}}
 						initial="hidden"
 						animate={
-							uploadedFiles.length !== 0 ? 'visible' : 'hidden'
+							currentDatasetList.length !== 0
+								? 'visible'
+								: 'hidden'
 						}
 						style={{ width: '50%' }}
 						className="border-2 rounded-md border-neutral-600 p-2 flex flex-col mt-8 max-h-96 overflow-y-auto"
@@ -132,7 +125,7 @@ export default function Index() {
 							Or load a file that you've already uploaded
 						</p>
 
-						{uploadedFiles.map((file) => (
+						{currentDatasetList.map((file) => (
 							<div
 								key={file.id}
 								className="flex items-center gap-2 cursor-pointer p-2 rounded-md transition-all hover:bg-gray-400/10"
