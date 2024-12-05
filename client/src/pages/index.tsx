@@ -14,7 +14,7 @@ import datasetsFeature from '../features/datasets'
 export default function Index() {
 	const navigate = useNavigate()
 
-	const { currentDatasetList } = datasetsFeature.useDatasets()
+	const { currentDatasetList, selectDataset } = datasetsFeature.useDatasets()
 
 	const [currentSlide, setCurrentSlide] = React.useState(0)
 	const [fileID, setFileID] = React.useState<string | null>(null)
@@ -85,7 +85,7 @@ export default function Index() {
 						</a>
 					</p>
 					<button
-						className="rounded-md shadow-md py-2 px-4 bg-blue-500 text-white mt-3"
+						className="btn-primary mt-3"
 						onClick={() => fileRef.current?.click()}
 					>
 						Upload Dataset
@@ -131,6 +131,7 @@ export default function Index() {
 								className="flex items-center gap-2 cursor-pointer p-2 rounded-md transition-all hover:bg-gray-400/10"
 								onClick={() => {
 									setFileID(file.id)
+									selectDataset(file.id)
 									setCurrentSlide(1)
 								}}
 							>
@@ -166,9 +167,9 @@ export default function Index() {
 					<h1 className="text-2xl font-bold text-center my-2">
 						Type of Machine Learning to apply
 					</h1>
-					<div className="flex items-center justify-center gap-2 ">
+					<div className="flex items-center justify-center gap-2 w-full">
 						<div
-							className="rounded-md border-2 border-neutral-600 shadow-md p-4 flex items-center justify-center flex-col gap-2 group transition-all hover:bg-gray-200/10 cursor-pointer"
+							className="w-3/12 rounded-md border-2 border-neutral-600 shadow-md p-4 flex items-center justify-center flex-col gap-2 group transition-all hover:bg-gray-200/10 cursor-pointer"
 							onClick={() => setSelectedMLType('regression')}
 						>
 							<IoStatsChartOutline
@@ -179,10 +180,13 @@ export default function Index() {
 								}`}
 							/>
 							<p>Regression</p>
+							<p className="text-gray-400">
+								Best for linear datasets
+							</p>
 						</div>
 
 						<div
-							className="rounded-md border-2 border-neutral-600 shadow-md p-4 flex items-center justify-center flex-col gap-2 group transition-all hover:bg-gray-200/10 cursor-pointer"
+							className="w-3/12 rounded-md border-2 border-neutral-600 shadow-md p-4 flex items-center justify-center flex-col gap-2 group transition-all hover:bg-gray-200/10 cursor-pointer"
 							onClick={() => setSelectedMLType('classification')}
 						>
 							<GrCluster
@@ -193,9 +197,12 @@ export default function Index() {
 								}`}
 							/>
 							<p>Classification</p>
+							<p className="text-gray-400">
+								Best for categorical datasets
+							</p>
 						</div>
 						<div
-							className="rounded-md border-2 border-neutral-600 shadow-md p-4 flex items-center justify-center flex-col gap-2 group transition-all hover:bg-gray-200/10 cursor-pointer"
+							className="w-3/12 rounded-md border-2 border-neutral-600 shadow-md p-4 flex items-center justify-center flex-col gap-2 group transition-all hover:bg-gray-200/10 cursor-pointer"
 							onClick={() => setSelectedMLType('clustering')}
 						>
 							<MdGroupWork
@@ -206,11 +213,14 @@ export default function Index() {
 								}`}
 							/>
 							<p>Clustering</p>
+							<p className="text-gray-400">
+								Best for grouping similar data
+							</p>
 						</div>
 					</div>
 
 					<button
-						className="rounded-md shadow-md py-2 px-4 bg-blue-500 text-white mt-3"
+						className="btn-primary mt-3"
 						onClick={() => {
 							if (!selectedMLType) return
 							navigate(`/train/${selectedMLType}/${fileID}`)
@@ -220,7 +230,7 @@ export default function Index() {
 					</button>
 
 					<button
-						className="rounded-md shadow-md py-2 px-4 bg-red-500 text-white mt-3"
+						className="btn-danger mt-3"
 						onClick={() => {
 							setCurrentSlide(0)
 							setSelectedMLType(null)

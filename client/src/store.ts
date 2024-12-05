@@ -1,10 +1,10 @@
 import { configureStore } from '@reduxjs/toolkit'
 
-import datasetReducer from './features/datasets/datasetsSlice'
+import datasetsFeature from './features/datasets/'
 
 export const store = configureStore({
 	reducer: {
-		datasets: datasetReducer,
+		datasets: datasetsFeature.datasetsReducer,
 	},
 })
 
