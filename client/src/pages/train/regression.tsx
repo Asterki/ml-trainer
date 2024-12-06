@@ -4,13 +4,14 @@ import { z } from 'zod'
 import { useNavigate, useParams } from 'react-router-dom'
 
 import DatasetFeature from '../../features/datasets'
-import AlertComponent from '../../components/AlertComponent'
+import DialogFeature from '../../features/dialogs'
 
 export default function TrainRegression() {
 	const navigate = useNavigate()
 	const { datasetId } = useParams()
 
 	const { selectedDataset, selectDataset } = DatasetFeature.useDatasets()
+	const { alertState, showAlert } = DialogFeature.useAlerts()
 
 	const [selectedFeatures, setSelectedFeatures] = React.useState<string[]>([])
 	const [selectedTarget, setSelectedTarget] = React.useState<string | null>(
@@ -50,17 +51,17 @@ export default function TrainRegression() {
 			console.log(parsedParams)
 		} catch (error) {
 			if (error instanceof z.ZodError) {
-				console.error(error.errors) // TODO: Show error to user
+				showAlert(error.errors[0].message, 'error')
 			}
 		}
 	}
 
 	return (
 		<div className="min-h-screen w-full">
-			<AlertComponent
-				message="ejwqoie"
-				type="error"
-				className="fixed bottom-2 left-2"
+			<DialogFeature.AlertComponent
+				type={alertState.type}
+				message={alertState.message}
+				showing={alertState.showing}
 			/>
 
 			<main className="w-full flex flex-col">

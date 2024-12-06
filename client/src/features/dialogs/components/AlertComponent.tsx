@@ -1,4 +1,5 @@
 import React from 'react'
+import { motion } from 'framer-motion'
 
 import {
 	FaTimes,
@@ -8,15 +9,15 @@ import {
 } from 'react-icons/fa'
 
 interface AlertsComponentProps {
+	showing: boolean
 	type: 'success' | 'error' | 'warning' | 'info'
-	className?: string
 	message: string
 }
 
 const AlertComponent: React.FC<AlertsComponentProps> = ({
 	type,
 	message,
-	className,
+	showing,
 }) => {
 	let icon = FaTimes
 	let color = 'red'
@@ -41,8 +42,11 @@ const AlertComponent: React.FC<AlertsComponentProps> = ({
 	}
 
 	return (
-		<div
-			className={`flex items-center p-2 bg-neutral-700 shadow-md border-l-4 border-${color}-500 ${className}`}
+		<motion.div
+			initial={{ opacity: 0 }}
+			animate={{ opacity: showing ? 1 : 0 }}
+			exit={{ opacity: 0 }}
+			className={`absolute bottom-2 left-2 flex items-center p-2 bg-neutral-700 shadow-md border-l-4 border-${color}-500`}
 		>
 			<div className="p-2">
 				{React.createElement(icon, { className: `text-${color}-500` })}
@@ -50,7 +54,7 @@ const AlertComponent: React.FC<AlertsComponentProps> = ({
 			<div className="p-2">
 				<p className={`text-${color}-700`}>{message}</p>
 			</div>
-		</div>
+		</motion.div>
 	)
 }
 
