@@ -11,8 +11,8 @@ import { setDatasetList, setSelectedDataset } from './datasetsSlice'
 import { DatasetFile } from '../../types'
 
 const useDatasets = () => {
-	const currentDatasetList = useSelector(
-		(state: RootState) => state.datasets.datasetList,
+	const { datasetList: currentDatasetList, selectedDataset } = useSelector(
+		(state: RootState) => state.datasets,
 	)
 	const dispatch = useDispatch()
 
@@ -68,6 +68,7 @@ const useDatasets = () => {
 
 	return {
 		currentDatasetList,
+		selectedDataset,
 		selectDataset,
 		deleteDataset,
 		uploadDataset,

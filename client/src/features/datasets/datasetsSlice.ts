@@ -1,12 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
 
-import { File } from '../../types'
+import { DatasetFile } from '../../types'
 
 export interface DatasetsState {
-	datasetList: File[]
+	datasetList: DatasetFile[]
 	selectedDataset: {
-		info: File
+		info: DatasetFile
 		data: Record<string, string[]> // It is required that I clarify this, this is a preview of the dataset, not the full dataset
 		// The full dataset is fetched when the user selects a dataset
 	} | null
@@ -21,13 +21,13 @@ export const datasetsSlice = createSlice({
 	name: 'datasets',
 	initialState,
 	reducers: {
-		setDatasetList: (state, action: PayloadAction<File[]>) => {
+		setDatasetList: (state, action: PayloadAction<DatasetFile[]>) => {
 			state.datasetList = action.payload
 		},
 		setSelectedDataset: (
 			state,
 			action: PayloadAction<{
-				info: File
+				info: DatasetFile
 				data: Record<string, string[]>
 			} | null>,
 		) => {
