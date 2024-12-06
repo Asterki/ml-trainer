@@ -4,6 +4,7 @@ import { z } from 'zod'
 import { useNavigate, useParams } from 'react-router-dom'
 
 import DatasetFeature from '../../features/datasets'
+import AlertComponent from '../../components/AlertComponent'
 
 export default function TrainRegression() {
 	const navigate = useNavigate()
@@ -56,6 +57,12 @@ export default function TrainRegression() {
 
 	return (
 		<div className="min-h-screen w-full">
+			<AlertComponent
+				message="ejwqoie"
+				type="error"
+				className="fixed bottom-2 left-2"
+			/>
+
 			<main className="w-full flex flex-col">
 				<div className="p-2 flex gap-2 items-center">
 					<button
