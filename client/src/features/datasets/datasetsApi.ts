@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 // Types
-import { File } from '../../types'
+import { DatasetFile } from '../../types'
 
 const endPoint = `${import.meta.env.VITE_SERVER_URL}/api/files`
 
@@ -46,10 +46,23 @@ const deleteDataset = async (datasetId: string) => {
 
 const fetchDatasetList = async () => {
 	const response = await axios.get<{
-		files: File[]
+		files: DatasetFile[]
 	}>(`${endPoint}/list`)
 
 	return response.data.files
+}
+
+const uploadDataset = async (formData: FormData) => {
+	const response = await axios.post<{
+		file_id: string
+		message: string
+	}>(`${endPoint}/upload`, formData, {
+		headers: {
+			'Content-Type': 'multipart/form-data',
+		},
+	})
+
+	return response.data
 }
 
 export default {
@@ -57,4 +70,5 @@ export default {
 	downloadDataset,
 	deleteDataset,
 	fetchDatasetList,
+	uploadDataset,
 }

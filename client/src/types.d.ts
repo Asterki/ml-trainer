@@ -1,4 +1,4 @@
-export interface File {
+export interface DatasetFile {
 	createdAt: string
 	extension: string
 	filename: string

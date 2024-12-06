@@ -8,7 +8,7 @@ import type { RootState } from '../../store'
 import { setDatasetList, setSelectedDataset } from './datasetsSlice'
 
 // Types
-import { File } from '../../types'
+import { DatasetFile } from '../../types'
 
 const useDatasets = () => {
 	const currentDatasetList = useSelector(
@@ -18,7 +18,7 @@ const useDatasets = () => {
 
 	const selectDataset = async (datasetId: string) => {
 		const selectedDataset = currentDatasetList.find(
-			(dataset: File) => dataset.id === datasetId,
+			(dataset: DatasetFile) => dataset.id === datasetId,
 		)
 
 		if (!selectedDataset) return false
@@ -40,6 +40,20 @@ const useDatasets = () => {
 		dispatch(setDatasetList(await datasetsApi.fetchDatasetList()))
 	}
 
+	const uploadDataset = async (file: File) => {
+		const formData = new FormData()
+		formData.append('file', file)
+
+		try {
+			const res = await datasetsApi.uploadDataset(formData)
+			dispatch(setDatasetList(await datasetsApi.fetchDatasetList()))
+
+			return res
+		} catch (error) {
+			console.error(error)
+		}
+	}
+
 	useEffect(() => {
 		;(async () => {
 			dispatch(setDatasetList(await datasetsApi.fetchDatasetList()))
@@ -56,6 +70,7 @@ const useDatasets = () => {
 		currentDatasetList,
 		selectDataset,
 		deleteDataset,
+		uploadDataset,
 	}
 }
 

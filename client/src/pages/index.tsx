@@ -1,5 +1,4 @@
 import * as React from 'react'
-import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 
 import { motion } from 'framer-motion'
@@ -15,7 +14,7 @@ import { FaTrash } from 'react-icons/fa'
 export default function Index() {
 	const navigate = useNavigate()
 
-	const { currentDatasetList, selectDataset, deleteDataset } =
+	const { currentDatasetList, selectDataset, deleteDataset, uploadDataset } =
 		datasetsFeature.useDatasets()
 
 	const [currentSlide, setCurrentSlide] = React.useState(0)
@@ -30,28 +29,8 @@ export default function Index() {
 		const file = e.target.files?.[0]
 		if (!file) return
 
-		const formData = new FormData()
-		formData.append('file', file)
-
-		try {
-			const res = await axios.post<{
-				file_id: string
-				message: string
-			}>(
-				`${import.meta.env.VITE_SERVER_URL}/api/files/upload`,
-				formData,
-				{
-					headers: {
-						'Content-Type': 'multipart/form-data',
-					},
-				},
-			)
-
-			setFileID(res.data.file_id)
-			setCurrentSlide(1)
-		} catch (error) {
-			console.error(error)
-		}
+		const result = await uploadDataset(file)
+		console.log(result)
 	}
 
 	return (
