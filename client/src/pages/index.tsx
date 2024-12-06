@@ -17,6 +17,8 @@ export default function Index() {
 	const { currentDatasetList, selectDataset, deleteDataset, uploadDataset } =
 		datasetsFeature.useDatasets()
 
+	const [dragging, setDragging] = React.useState(false)
+
 	const [currentSlide, setCurrentSlide] = React.useState(0)
 	const [fileID, setFileID] = React.useState<string | null>(null)
 	const [selectedMLType, setSelectedMLType] = React.useState<
@@ -35,7 +37,42 @@ export default function Index() {
 
 	return (
 		<div className="min-h-screen w-full">
-			<main className="w-full flex">
+			<main
+				className="w-full flex"
+				onDragOver={(e) => {
+					e.preventDefault()
+					setDragging(true)
+				}}
+				onDragEnter={(e) => {
+					e.preventDefault()
+					setDragging(true)
+				}}
+			>
+				<div
+					onDrop={(e) => {
+						e.preventDefault()
+						setDragging(false)
+
+						const file = e.dataTransfer.files?.[0]
+						if (!file) return
+
+						uploadDataset(file)
+					}}
+					className={`${
+						dragging ? 'block' : 'hidden'
+					} absolute top-0 left-0 w-full h-full bg-black/50 z-50 flex items-center justify-center`}
+				>
+					<div className="border-2 border-dashed border-neutral-600 p-4 rounded-md backdrop-blur-sm bg-white/10 text-center">
+						<p className="text-3xl">Drop the file here</p>
+						<button
+							className="btn-danger mt-4"
+							onClick={() => setDragging(false)}
+						>
+							Cancel
+						</button>
+					</div>
+				</div>
+
 				<motion.div
 					variants={{
 						hidden: {
