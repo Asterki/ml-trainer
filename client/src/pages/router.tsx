@@ -14,15 +14,15 @@ const router = createBrowserRouter([
 
 	// Train
 	{
-		path: '/train/classification/:fileID',
+		path: '/train/classification/:datasetId',
 		element: <TrainClassification />,
 	},
 	{
-		path: '/train/regression/:fileID',
+		path: '/train/regression/:datasetId',
 		element: <TrainRegression />,
 	},
 	{
-		path: '/train/clustering/:fileID',
+		path: '/train/clustering/:datasetId',
 		element: <TrainClustering />,
 	},
 ])

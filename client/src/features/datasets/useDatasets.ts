@@ -17,7 +17,8 @@ const useDatasets = () => {
 	const dispatch = useDispatch()
 
 	const selectDataset = async (datasetId: string) => {
-		const selectedDataset = currentDatasetList.find(
+		const datasets = await datasetsApi.fetchDatasetList()
+		const selectedDataset = datasets.find(
 			(dataset: DatasetFile) => dataset.id === datasetId,
 		)
 

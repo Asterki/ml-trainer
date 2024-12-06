@@ -12,7 +12,13 @@ import router from './pages/router'
 ReactDOM.createRoot(document.getElementById('root')!).render(
 	<React.StrictMode>
 		<Provider store={store}>
-			<RouterProvider router={router} />
+			<RouterProvider
+				router={router}
+				future={{
+					v7_startTransition: true,
+				}}
+				fallbackElement={<div>Loading...</div>}
+			/>
 		</Provider>
 	</React.StrictMode>,
 )

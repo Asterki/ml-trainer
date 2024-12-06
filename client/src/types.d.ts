@@ -4,4 +4,5 @@ export interface DatasetFile {
 	filename: string
 	id: string
 	path: string
+	headers: string
 }

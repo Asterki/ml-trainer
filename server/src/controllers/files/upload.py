@@ -1,11 +1,16 @@
 from flask import jsonify, Request
 from uuid import uuid4
 from prisma import Prisma
+import pandas as pd
 import asyncio
 
 def upload_handler(request: Request):
     if "file" not in request.files:
         return jsonify({"error": "No file part in the request"}), 400
+
+    # Create the uploads folder if it doesn't exist yet
+    if not os.path.exists("uploads"):
+        os.makedirs("uploads")
 
     file = request.files["file"]
     if file.filename == "":
@@ -18,6 +23,10 @@ def upload_handler(request: Request):
 
     file.save(f"uploads/{file_id}.{file.extension}")
 
+    dataset_headers = []
+    df = pd.read_csv(f"uploads/{file_id}.{file.extension}")
+    dataset_headers = df.columns.tolist()
+
     async def register_file_to_db():
         db = Prisma()
         await db.connect()
@@ -28,6 +37,7 @@ def upload_handler(request: Request):
                 "extension": file.extension,
                 "filename": file.filename,
                 "path": f"uploads/{file_id}.{file.extension}",
+                "headers": ",".join(dataset_headers),
             }
         )
         
