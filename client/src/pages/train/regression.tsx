@@ -5,6 +5,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 
 import DatasetFeature from '../../features/datasets'
 import DialogFeature from '../../features/dialogs'
+import TrainingFeature from '../../features/training'
 
 export default function TrainRegression() {
 	const navigate = useNavigate()
@@ -12,6 +13,7 @@ export default function TrainRegression() {
 
 	const { selectedDataset, selectDataset } = DatasetFeature.useDatasets()
 	const { alertState, showAlert } = DialogFeature.useAlerts()
+	const { submitForTraining } = TrainingFeature.useRegression()
 
 	const [selectedFeatures, setSelectedFeatures] = React.useState<string[]>([])
 	const [selectedTarget, setSelectedTarget] = React.useState<string | null>(
@@ -34,7 +36,14 @@ export default function TrainRegression() {
 			const parsedParams = z
 				.object({
 					selectedFeatures: z.array(z.string()).nonempty(),
-					selectedTarget: z.string(),
+					selectedTarget: z.string().refine(
+						(target) => {
+							// Don't allow features to be the same as the target
+							if (selectedFeatures.includes(target)) return false
+							return true
+						},
+						{ message: 'Target cannot be the same as a feature' },
+					),
 					selectedModel: z.enum([
 						'linear',
 						'polynomial',
@@ -48,7 +57,15 @@ export default function TrainRegression() {
 					selectedModel,
 				})
 
-			console.log(parsedParams)
+			const result = await submitForTraining(datasetId!, {
+				trainingParams: {
+					features: parsedParams.selectedFeatures,
+					target: parsedParams.selectedTarget,
+					model: parsedParams.selectedModel,
+				},
+			})
+
+			console.log(result)
 		} catch (error) {
 			if (error instanceof z.ZodError) {
 				showAlert(error.errors[0].message, 'error')
@@ -82,19 +99,7 @@ export default function TrainRegression() {
 				</div>
 
 				<div className="p-2">
-					<section className="p-2 rounded-md border-2 border-neutral-600 shadow-md">
-						{selectedDataset ? (
-							<DatasetFeature.DatasetPreviewComponent
-								dataset={selectedDataset!.data}
-								info={selectedDataset!.info}
-								recordCount={500}
-							/>
-						) : (
-							<p>No dataset selected</p>
-						)}
-					</section>
-
-					<section className="flex items-start justify-center gap-2 mt-2">
+					<section className="flex items-start justify-center gap-2">
 						<div className="p-2 rounded-md border-2 border-neutral-600 w-1/2 shadow-md">
 							<h2 className="text-xl font-bold">
 								Select Features
@@ -228,6 +233,18 @@ export default function TrainRegression() {
 						>
 							Train Model
 						</button>
+					</section>
+
+					<section className="p-2 rounded-md border-2 border-neutral-600 shadow-md mt-2">
+						{selectedDataset ? (
+							<DatasetFeature.DatasetPreviewComponent
+								dataset={selectedDataset!.data}
+								info={selectedDataset!.info}
+								recordCount={2}
+							/>
+						) : (
+							<p>No dataset selected</p>
+						)}
 					</section>
 				</div>
 			</main>

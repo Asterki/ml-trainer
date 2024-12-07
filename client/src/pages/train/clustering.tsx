@@ -4,15 +4,17 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 export default function TrainClustering() {
     const navigate = useNavigate();
-    const { fileID } = useParams();
+    const { datasetId } = useParams();
 
     React.useEffect(() => {
-        if (fileID === undefined) return navigate('/home');
+        if (datasetId === undefined) return navigate('/');
     })
 
     return (
         <div className="min-h-screen w-full">
-            <main className="w-full flex"></main>
+            <main className="w-full flex">
+                <h1 className="text-2">Currently in development</h1>
+            </main>
         </div>
     )
 }

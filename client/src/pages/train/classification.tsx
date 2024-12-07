@@ -1,18 +1,20 @@
-import * as React from 'react';
+import * as React from 'react'
 
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom'
 
 export default function TrainClassification() {
-    const navigate = useNavigate();
-    const { fileID } = useParams();
+	const navigate = useNavigate()
+	const { datasetId } = useParams()
 
-    React.useEffect(() => {
-        if (fileID === undefined) return navigate('/home');
-    })
+	React.useEffect(() => {
+		if (datasetId === undefined) return navigate('/')
+	})
 
-    return (
-        <div className="min-h-screen w-full">
-            <main className="w-full flex"></main>
-        </div>
-    )
+	return (
+		<div className="min-h-screen w-full">
+			<main className="w-full flex">
+				<h1 className="text-2">Currently in development</h1>
+			</main>
+		</div>
+	)
 }
