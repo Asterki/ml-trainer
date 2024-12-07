@@ -74,6 +74,7 @@ def training_regression_handler(request: Request):
                 "message": "Model trained successfully",
                 "modelId": str(model_id),
                 "accuracy": accuracy,
+                "success": True,
             }
         )
 

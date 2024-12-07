@@ -13,7 +13,12 @@ const submitForTraining = async (
 		// Left clear for further implementation
 	},
 ) => {
-	const { data } = await axios.post(
+	const { data } = await axios.post<{
+		message: string
+		modelId: string
+		accuracy: number
+		success: boolean
+	}>(
 		`${endPoint}/regression`,
 		{
 			datasetId: datasetId,
