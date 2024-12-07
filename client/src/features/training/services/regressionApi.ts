@@ -1,5 +1,7 @@
 import axios from 'axios'
 
+const endPoint = `${import.meta.env.VITE_SERVER_URL}/api/training`
+
 const submitForTraining = async (
 	datasetId: string,
 	params: {
@@ -11,15 +13,11 @@ const submitForTraining = async (
 		// Left clear for further implementation
 	},
 ) => {
-	const { trainingParams } = params
-	const { features, target, model } = trainingParams
-
 	const { data } = await axios.post(
-		`http://localhost:5000/api/train/regression/${datasetId}`,
+		`${endPoint}/regression`,
 		{
-			features,
-			target,
-			model,
+			datasetId: datasetId,
+			params: params
 		},
 	)
 
