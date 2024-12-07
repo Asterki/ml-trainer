@@ -10,7 +10,7 @@ def download_handler(request: Request):
     if not file_id:
         return jsonify({"message": "File not found"})
 
-    async def register_file_to_db():
+    async def get_file_from_db():
         db = Prisma()
         await db.connect()
 
@@ -18,7 +18,7 @@ def download_handler(request: Request):
         await db.disconnect()
         return res
 
-    file = dict(asyncio.run(register_file_to_db()))
+    file = dict(asyncio.run(get_file_from_db()))
     if not file:
         return jsonify({"message": "File not found"})
 
