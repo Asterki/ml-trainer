@@ -6,6 +6,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import DatasetFeature from '../../features/datasets'
 import DialogFeature from '../../features/dialogs'
 import TrainingFeature from '../../features/training'
+import { FaSpinner } from 'react-icons/fa'
 
 export default function TrainRegression() {
 	const navigate = useNavigate()
@@ -13,7 +14,7 @@ export default function TrainRegression() {
 
 	const { selectedDataset, selectDataset } = DatasetFeature.useDatasets()
 	const { alertState, showAlert } = DialogFeature.useAlerts()
-	const { submitForTraining } = TrainingFeature.useRegression()
+	const { submitForTraining, regressionTrainingStatus } = TrainingFeature.useRegression()
 
 	const [selectedFeatures, setSelectedFeatures] = React.useState<string[]>([])
 	const [selectedTarget, setSelectedTarget] = React.useState<string | null>(
@@ -21,8 +22,12 @@ export default function TrainRegression() {
 	)
 	const [selectedModel, setSelectedModel] = React.useState<string>('linear')
 
+	const [trainedModelID, setTrainedModelID] = React.useState<string | null>(
+		null
+	)
+
 	React.useEffect(() => {
-		;(async () => {
+		; (async () => {
 			if (!selectedDataset && datasetId) {
 				await selectDataset(datasetId)
 			}
@@ -35,7 +40,12 @@ export default function TrainRegression() {
 			// Validate the data entered (Just to be sure)
 			const parsedParams = z
 				.object({
-					selectedFeatures: z.array(z.string()).nonempty(),
+					selectedFeatures: z.array(z.string()).nonempty().refine((items) => {
+						if (items.length > 1 && selectedModel == "linear") return false
+						return true
+					}, {
+						message: 'Linear regression requires only one feature'
+					}),
 					selectedTarget: z.string().refine(
 						(target) => {
 							// Don't allow features to be the same as the target
@@ -65,7 +75,7 @@ export default function TrainRegression() {
 				},
 			})
 
-			console.log(result)
+			setTrainedModelID(result.modelId)
 		} catch (error) {
 			if (error instanceof z.ZodError) {
 				showAlert(error.errors[0].message, 'error')
@@ -226,13 +236,36 @@ export default function TrainRegression() {
 						</select>
 					</section>
 
-					<section>
-						<button
-							className="btn-primary mt-2"
-							onClick={trainModelButtonClicked}
-						>
-							Train Model
-						</button>
+					<section className='flex gap-2 items-center mt-2'>
+						{regressionTrainingStatus == "not-started" && (
+							<button
+								className="btn-primary"
+								onClick={trainModelButtonClicked}
+							>
+								Train Model
+							</button>
+						)}
+
+						{regressionTrainingStatus == "training" && (
+							<div className='flex items-center justify-center gap-2'>
+								<FaSpinner className="animate-spin" />
+								<p>Training model...</p>
+							</div>
+						)}
+
+						{regressionTrainingStatus
+							== 'complete' && (
+								<div className='flex items-center justify-center gap-2'>
+									<p>Model trained successfully</p>
+									<button
+										className="btn-primary"
+										onClick={() => { navigate(`/results/regression/${trainedModelID}`) }}
+									>
+										See Results
+									</button>
+								</div>
+
+							)}
 					</section>
 
 					<section className="p-2 rounded-md border-2 border-neutral-600 shadow-md mt-2">
@@ -240,7 +273,7 @@ export default function TrainRegression() {
 							<DatasetFeature.DatasetPreviewComponent
 								dataset={selectedDataset!.data}
 								info={selectedDataset!.info}
-								recordCount={2}
+								recordCount={50}
 							/>
 						) : (
 							<p>No dataset selected</p>
