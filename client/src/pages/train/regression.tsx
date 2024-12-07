@@ -22,7 +22,7 @@ export default function TrainRegression() {
 	const [selectedModel, setSelectedModel] = React.useState<string>('linear')
 
 	React.useEffect(() => {
-		;(async () => {
+		; (async () => {
 			if (!selectedDataset && datasetId) {
 				await selectDataset(datasetId)
 			}
@@ -35,7 +35,12 @@ export default function TrainRegression() {
 			// Validate the data entered (Just to be sure)
 			const parsedParams = z
 				.object({
-					selectedFeatures: z.array(z.string()).nonempty(),
+					selectedFeatures: z.array(z.string()).nonempty().refine((items) => {
+						if (items.length > 1 && selectedModel == "linear") return false
+						return true
+					}, {
+						message: 'Linear regression requires only one feature'
+					}),
 					selectedTarget: z.string().refine(
 						(target) => {
 							// Don't allow features to be the same as the target
@@ -240,7 +245,7 @@ export default function TrainRegression() {
 							<DatasetFeature.DatasetPreviewComponent
 								dataset={selectedDataset!.data}
 								info={selectedDataset!.info}
-								recordCount={2}
+								recordCount={50}
 							/>
 						) : (
 							<p>No dataset selected</p>

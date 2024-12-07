@@ -3,6 +3,7 @@ from uuid import uuid4
 from prisma import Prisma
 import pandas as pd
 import asyncio
+import os
 
 def upload_handler(request: Request):
     if "file" not in request.files:

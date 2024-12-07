@@ -2,6 +2,8 @@ from flask import jsonify, Request
 from prisma import Prisma
 import pandas as pd
 import sys
+import uuid
+import pickle
 import matplotlib.pyplot as plt
 
 import asyncio
@@ -11,6 +13,7 @@ from typing import List
 
 sys.path.append("..")
 from services.regression import train_linear_regression_model
+from services.models import save_model
 
 
 class TrainingParams(BaseModel):
@@ -43,7 +46,7 @@ def training_regression_handler(request: Request):
 
         file = dict(asyncio.run(get_file_from_db()))
         if not file:
-            return jsonify({"message": "File not found"})
+            return jsonify({"message": "File not found"}), 404
 
         file_path = file["path"]
         data = pd.read_csv(file_path)
@@ -58,15 +61,21 @@ def training_regression_handler(request: Request):
         X = data[training_request.params.trainingParams.features]
         y = data[training_request.params.trainingParams.target]
 
-        y_pred = model.predict(X)
-        plt.scatter(y, y_pred)
+        # Get the model accuracy
+        accuracy = model.score(X, y)
 
-        plt.xlabel("True Values")
-        plt.ylabel("Predictions")
+        # Save the model
+        model_id, model_path = save_model(
+            model, training_request.params.trainingParams.model, file["id"]
+        )
 
-        plt.show()
-
-        return jsonify({"message": "Model trained successfully"})
+        return jsonify(
+            {
+                "message": "Model trained successfully",
+                "modelId": str(model_id),
+                "accuracy": accuracy,
+            }
+        )
 
     except ValidationError as e:
         return jsonify({"message": "Validation error", "errors": e.errors()}), 400

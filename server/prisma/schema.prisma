@@ -11,10 +11,21 @@ generator db {
 }
 
 model File {
+  id        String   @id @default(uuid())
+  filename  String
+  extension String
+  path      String
+  createdAt DateTime @default(now())
+  headers   String
+
+  TrainedModels TrainedModel[]
+}
+
+model TrainedModel {
   id         String   @id @default(uuid())
-  filename   String
-  extension  String
-  path       String
+  type       String
+  modelPath  String
   createdAt  DateTime @default(now())
-  headers String
+  dataset_id String
+  dataset    File     @relation(fields: [dataset_id], references: [id])
 }
