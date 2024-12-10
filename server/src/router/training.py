@@ -9,5 +9,5 @@ training_router = Blueprint("training_router", __name__, url_prefix="/api/traini
 
 
 @training_router.route("/regression", methods=["POST"]) 
-def upload():
+def train_regression():
     return training_regression_handler(request)

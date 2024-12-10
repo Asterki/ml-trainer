@@ -36,3 +36,23 @@ def save_model(model, type, dataset_id):
     with open(model_path, "wb") as file:
         pickle.dump(model, file)
     return model_id, model_path
+
+
+def get_model(modelId):
+    async def get_model_from_db():
+        db = Prisma()
+        await db.connect()
+
+        res = await db.trainedmodel.find_first(where={"id": modelId})
+        await db.disconnect()
+        return res
+
+    model_data = dict(asyncio.run(get_model_from_db()))
+    if not model_data:
+        return None
+
+    model = None
+    with open(model_data["modelPath"], "rb") as file:
+        model = pickle.load(file)
+
+    return model_data, model
